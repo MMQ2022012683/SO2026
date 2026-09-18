@@ -14,7 +14,7 @@ import random
 
 MAXIMO_TEMPO_EXECUCAO = 65535
 
-n_processos = 3
+n_processos = 4
 
 
 def main():
@@ -30,35 +30,47 @@ def main():
 
     # Escolher algoritmo
     while True:
-        alg = int(input(
+        alg = input(
             "Escolha o algoritmo?: [1=FCFS 2=SJF Preemptivo 3=SJF Nao Preemptivo  "
-            "4=Prioridade Preemptivo 5=Prioridade Nao Preemptivo  6=Round_Robin  "
-            "7=Imprime lista de processos 8=Popular processos novamente 9=Sair]: "))
+            "4=Prioridade Preemptivo 5=Prioridade Nao Preemptivo 6=Round_Robin  "
+            "7=Imprime lista de processos 8=Popular processos novamente 9=Sair]: "
+        )
 
-        if alg == 1:  # FCFS
+        # Se apertar Enter sem digitar nada, mostra o menu novamente
+        if alg == "":
+            continue
+
+        alg = int(alg)
+
+        if alg == 1:
             FCFS(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada)
 
-        elif alg == 2:  # SJF PREEMPTIVO
+        elif alg == 2:
             SJF(True, tempo_execucao, tempo_espera, tempo_restante, tempo_chegada)
 
-        elif alg == 3:  # SJF NAO PREEMPTIVO
+        elif alg == 3:
             SJF(False, tempo_execucao, tempo_espera, tempo_restante, tempo_chegada)
 
-        elif alg == 4:  # PRIORIDADE PREEMPTIVO
-            PRIORIDADE(True, tempo_execucao, tempo_espera, tempo_restante, tempo_chegada, prioridade)
+        elif alg == 4:
+            PRIORIDADE(True, tempo_execucao, tempo_espera,
+                       tempo_restante, tempo_chegada, prioridade)
 
-        elif alg == 5:  # PRIORIDADE NAO PREEMPTIVO
-            PRIORIDADE(False, tempo_execucao, tempo_espera, tempo_restante, tempo_chegada, prioridade)
+        elif alg == 5:
+            PRIORIDADE(False, tempo_execucao, tempo_espera,
+                       tempo_restante, tempo_chegada, prioridade)
 
-        elif alg == 6:  # Round_Robin
+        elif alg == 6:
             Round_Robin(tempo_execucao, tempo_espera, tempo_restante)
 
-        elif alg == 7:  # IMPRIME CONTEUDO INICIAL DOS PROCESSOS
-            imprime_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada, prioridade)
+        elif alg == 7:
+            imprime_processos(tempo_execucao, tempo_espera,
+                              tempo_restante, tempo_chegada, prioridade)
 
-        elif alg == 8:  # REATRIBUI VALORES INICIAIS
-            popular_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada, prioridade)
-            imprime_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada, prioridade)
+        elif alg == 8:
+            popular_processos(tempo_execucao, tempo_espera,
+                              tempo_restante, tempo_chegada, prioridade)
+            imprime_processos(tempo_execucao, tempo_espera,
+                              tempo_restante, tempo_chegada, prioridade)
 
         elif alg == 9:
             break
@@ -139,9 +151,64 @@ def SJF(preemptivo, execucao, espera, restante, chegada):
     tempo_restante = list(restante)
     tempo_chegada = list(chegada)
 
-    # implementar codigo do SJF preemptivo e nao preemptivo
-    # ...
-    #
+    tempo = 0
+    processos_finalizados = 0
+    processo_em_execucao = -1
+
+    while processos_finalizados < n_processos:
+
+        # Procura os processos que já chegaram e ainda não terminaram
+        candidatos = []
+
+        for i in range(n_processos):
+            if tempo_chegada[i] <= tempo and tempo_restante[i] > 0:
+                candidatos.append(i)
+
+        # Se nenhum processo chegou, avanca o tempo
+        if len(candidatos) == 0:
+            tempo += 1
+            continue
+
+        if preemptivo:
+            # SJF PREEMPTIVO
+            # Escolhe o processo com menor tempo restante
+            processo_em_execucao = min(
+                candidatos,
+                key=lambda i: (tempo_restante[i], tempo_chegada[i], i)
+            )
+
+        else:
+            # SJF NAO PREEMPTIVO
+            # So escolhe um novo processo quando a CPU esta livre
+            if processo_em_execucao == -1:
+                processo_em_execucao = min(
+                    candidatos,
+                    key=lambda i: (tempo_execucao[i], tempo_chegada[i], i)
+                )
+
+        print("tempo[" + str(tempo) + "]: processo[" +
+              str(processo_em_execucao) + "] restante=" +
+              str(tempo_restante[processo_em_execucao]))
+
+        # Executa o processo durante 1 unidade de tempo
+        tempo_restante[processo_em_execucao] -= 1
+        tempo += 1
+
+        # Verifica se o processo terminou
+        if tempo_restante[processo_em_execucao] == 0:
+
+            # Tempo de espera =
+            # tempo de termino - chegada - tempo de execucao
+            tempo_espera[processo_em_execucao] = (
+                tempo
+                - tempo_chegada[processo_em_execucao]
+                - tempo_execucao[processo_em_execucao]
+            )
+
+            processos_finalizados += 1
+
+            # CPU fica livre para escolher outro processo
+            processo_em_execucao = -1
 
     imprime_stats(tempo_espera)
 
