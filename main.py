@@ -33,8 +33,7 @@ def main():
         alg = input(
             "Escolha o algoritmo?: [1=FCFS 2=SJF Preemptivo 3=SJF Nao Preemptivo  "
             "4=Prioridade Preemptivo 5=Prioridade Nao Preemptivo 6=Round_Robin  "
-            "7=Imprime lista de processos 8=Popular processos novamente 9=Sair]: "
-        )
+            "7=Imprime lista de processos 8=Popular processos novamente 9=Sair]: " )
 
         # Se apertar Enter sem digitar nada, mostra o menu novamente
         if alg == "":
@@ -42,39 +41,33 @@ def main():
 
         alg = int(alg)
 
-        if alg == 1:
+        if alg == 1:  # FCFS
             FCFS(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada)
 
-        elif alg == 2:
+        elif alg == 2:  # SJF PREEMPTIVO
             SJF(True, tempo_execucao, tempo_espera, tempo_restante, tempo_chegada)
 
-        elif alg == 3:
+        elif alg == 3:  # SJF NAO PREEMPTIVO
             SJF(False, tempo_execucao, tempo_espera, tempo_restante, tempo_chegada)
 
-        elif alg == 4:
-            PRIORIDADE(True, tempo_execucao, tempo_espera,
-                       tempo_restante, tempo_chegada, prioridade)
+        elif alg == 4:  # PRIORIDADE PREEMPTIVO
+            PRIORIDADE(True, tempo_execucao, tempo_espera, tempo_restante, tempo_chegada, prioridade)
 
-        elif alg == 5:
-            PRIORIDADE(False, tempo_execucao, tempo_espera,
-                       tempo_restante, tempo_chegada, prioridade)
+        elif alg == 5:  # PRIORIDADE NAO PREEMPTIVO
+            PRIORIDADE(False, tempo_execucao, tempo_espera, tempo_restante, tempo_chegada, prioridade)
 
-        elif alg == 6:
+        elif alg == 6:  # Round_Robin
             Round_Robin(tempo_execucao, tempo_espera, tempo_restante)
 
-        elif alg == 7:
-            imprime_processos(tempo_execucao, tempo_espera,
-                              tempo_restante, tempo_chegada, prioridade)
+        elif alg == 7:  # IMPRIME CONTEUDO INICIAL DOS PROCESSOS
+            imprime_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada, prioridade)
 
-        elif alg == 8:
-            popular_processos(tempo_execucao, tempo_espera,
-                              tempo_restante, tempo_chegada, prioridade)
-            imprime_processos(tempo_execucao, tempo_espera,
-                              tempo_restante, tempo_chegada, prioridade)
+        elif alg == 8:  # REATRIBUI VALORES INICIAIS
+            popular_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada, prioridade)
+            imprime_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada, prioridade)
 
         elif alg == 9:
             break
-
 
 def popular_processos(tempo_execucao, tempo_espera, tempo_restante, tempo_chegada, prioridade):
     aleatorio = int(input("Sera aleatorio?:  "))
